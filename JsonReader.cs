@@ -1,0 +1,228 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+namespace Jannesen.FileFormat.Json
+{
+    public sealed class JsonReader: IDisposable
+    {
+        private                 TextReader              _textReader;
+        private                 int                     _lineNumber;
+        private                 int                     _linePosition;
+        private                 int                     _undoChar;
+
+        public                  int                     LineNumber
+        {
+            get {
+                return _lineNumber;
+            }
+        }
+        public                  int                     LinePosition
+        {
+            get {
+                return _linePosition;
+            }
+        }
+
+        private                                         JsonReader(TextReader textReader)
+        {
+            _textReader = textReader;
+            _lineNumber   = 1;
+            _linePosition = 0;
+            _undoChar     = -1;
+        }
+        public                  void                    Dispose()
+        {
+            _textReader.Dispose();
+        }
+
+        public      static      object                  Parse(string s)
+        {
+            using (TextReader stream = new StringReader(s))
+                return Parse(stream);
+        }
+        public      static      object                  Parse(TextReader stream)
+        {
+            using(JsonReader reader = new JsonReader(stream))
+            {
+                object rtn = reader.ParseNode();
+
+                //test eof
+                return rtn;
+            }
+        }
+        public      static      object                  ParseFile(string fileName)
+        {
+            using(JsonReader reader = new JsonReader(new StreamReader(fileName)))
+            {
+                object rtn = reader.ParseNode();
+
+                //test eof
+                return rtn;
+            }
+        }
+        public                  object                  ParseNode()
+        {
+            int             c = SkipWhiteSpace();
+
+            switch(c)
+            {
+            case  (int)'[':     return JsonArray.Parse(this);
+            case (int)'{':      return JsonObject.Parse(this);
+            case (int)'"':      return ReadString();
+
+            default:
+                {
+                    string s = ReadChars();
+
+                    if (s == "null")    return null;
+                    if (s == "true")    return true;
+                    if (s == "false")   return false;
+
+                    int     p = 0;
+
+                    if (s[0] == '+' || s[0] == '-')
+                        ++p;
+
+                    while (p < s.Length && ('0' <= s[p] && s[p] <= '9'))
+                        ++p;
+
+                    if (p == s.Length) {
+                        if (Int64.TryParse(s, out var rtn))
+                            return rtn;
+                    }
+                    else {
+                        if (s[p] == '.' || s[p] == 'e' || s[p] == 'E') {
+                            if (s[p] == '.') {
+                                ++p;
+
+                                while (p < s.Length && ('0' <= s[p] && s[p] <= '9'))
+                                    ++p;
+                            }
+
+                            if (p < s.Length && (s[p] == 'e' || s[p] == 'E')) {
+                                ++p;
+
+                                if (p < s.Length && (s[p] == '+' || s[p] == '-'))
+                                    ++p;
+
+                                while (p < s.Length && ('0' <= s[p] && s[p] <= '9'))
+                                    ++p;
+                            }
+                        }
+
+                        if (p == s.Length) {
+                            if (double.TryParse(s,
+                                                System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowExponent | System.Globalization.NumberStyles.AllowLeadingSign,
+                                                System.Globalization.CultureInfo.InvariantCulture,
+                                                out var rtn))
+                                return rtn;
+                        }
+                    }
+
+                    throw new JsonReaderException("Invalid value", this);
+                }
+            }
+        }
+
+        public                  int                     SkipWhiteSpace()
+        {
+            int     c;
+
+            while (_isWhiteSpace(c = ReadChar()))
+                ;
+
+            _undoChar = c;
+
+            return c;
+        }
+        public                  int                     ReadChar()
+        {
+            int  c;
+
+            if (_undoChar >= 0) {
+                c = _undoChar;
+                _undoChar = -1;
+            }
+            else {
+                c = _textReader.Read();
+
+                if (c == -1)
+                    throw new JsonReaderException("EOF read", this);
+
+                if (c == '\n') {
+                    ++_lineNumber;
+                    _linePosition = 0;
+                }
+                else
+                    ++_linePosition;
+            }
+
+            return c;
+        }
+        public                  string                  ReadString()
+        {
+            int                 c;
+            int                 e   = ReadChar();
+            StringBuilder       rtn = new StringBuilder();
+
+            while ((c = ReadChar()) != e) {
+                if (c == (int)'\\') {
+                    c = ReadChar();
+
+                    switch(c)
+                    {
+                    case 'b':       c = (int)'\b';      break;
+                    case 'f':       c = (int)'\f';      break;
+                    case 'n':       c = (int)'\n';      break;
+                    case 'r':       c = (int)'\r';      break;
+                    case 't':       c = (int)'\t';      break;
+                    case 'u':       c = (ReadCharHex() << 24) | (ReadCharHex() << 16) | (ReadCharHex() << 8) | (ReadCharHex() << 4);        break;
+                    }
+                }
+
+                rtn.Append((char)c);
+            }
+
+            return rtn.ToString();
+        }
+        public                  string                  ReadChars()
+        {
+            int                 c;
+            StringBuilder       rtn = new StringBuilder();
+
+            while (_validChars(c = ReadChar()))
+                rtn.Append((char)c);
+
+            _undoChar = c;
+
+            if (rtn.Length == 0)
+                throw new JsonReaderException("Invalid character", this);
+
+            return rtn.ToString();
+        }
+        public                  int                     ReadCharHex()
+        {
+            int c = ReadChar();
+
+            if ((int)'0' <= c && c <= (int)'9')     return c - (int)'0';
+            if ((int)'A' <= c && c <= (int)'F')     return c - (int)'A' + 10;
+            if ((int)'a' <= c && c <= (int)'F')     return c - (int)'a' + 10;
+
+            throw new JsonReaderException("Invalid hexadecimal digit.", this);
+        }
+
+        private     static      bool                    _isWhiteSpace(int c)
+        {
+            return c == (int)' ' || c == (int)'\t' || c == (int)'\n' || c == (int)'\r';
+        }
+        private     static      bool                    _validChars(int c)
+        {
+            return ((int)'0' <= c && c <= (int)'9') ||
+                   ((int)'A' <= c && c <= (int)'Z') ||
+                   ((int)'a' <= c && c <= (int)'z') ||
+                   (c == (int)'$' || c == (int)'_' || c == (int)'-' || c == (int)'+' || c == (int)'.');
+        }
+    }
+}
