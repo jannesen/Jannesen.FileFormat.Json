@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -46,8 +46,7 @@ namespace Jannesen.FileFormat.Json
         public                  void                    Flush()
         {
             while (_domStatus.Count > 0) {
-                switch(_domStatus.Pop())
-                {
+                switch(_domStatus.Pop()) {
                 case DomStatus.ObjectStart:     _textWriter.Write("}");     break;
                 case DomStatus.ArrayStart:      _textWriter.Write("]");     break;
                 }
@@ -279,8 +278,7 @@ namespace Jannesen.FileFormat.Json
             for(int i = 0 ; i < value.Length ; ++i) {
                 char c = value[i];
 
-                switch (c)
-                {
+                switch (c) {
                 case '"':   _textWriter.Write("\\\"");      break;
                 case '\\':  _textWriter.Write("\\\\");      break;
                 case '\b':  _textWriter.Write("\\b");       break;

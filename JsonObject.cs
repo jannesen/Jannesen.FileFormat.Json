@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -196,8 +196,7 @@ namespace Jannesen.FileFormat.Json
                     }
                 }
                 else {
-                    switch(fieldpos)
-                    {
+                    switch(fieldpos) {
                     case 0: // year
                     case 1: // month
                         if (chr!='-') goto invalid_date;

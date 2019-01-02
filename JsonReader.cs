@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -66,8 +66,7 @@ namespace Jannesen.FileFormat.Json
         {
             int             c = SkipWhiteSpace();
 
-            switch(c)
-            {
+            switch(c) {
             case  (int)'[':     return JsonArray.Parse(this);
             case (int)'{':      return JsonObject.Parse(this);
             case (int)'"':      return ReadString();
@@ -171,8 +170,7 @@ namespace Jannesen.FileFormat.Json
                 if (c == (int)'\\') {
                     c = ReadChar();
 
-                    switch(c)
-                    {
+                    switch(c) {
                     case 'b':       c = (int)'\b';      break;
                     case 'f':       c = (int)'\f';      break;
                     case 'n':       c = (int)'\n';      break;
