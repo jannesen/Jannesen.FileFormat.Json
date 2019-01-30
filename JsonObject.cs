@@ -69,11 +69,10 @@ namespace Jannesen.FileFormat.Json
         }
         public                  string                  GetValueString(string name)
         {
-            object v = GetValue(name);
+            var v = GetValue(name);
 
             try {
-                if (v is Int64) return ((Int64)v).ToString();
-                return (string)v;
+                return _convertToString(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -81,10 +80,13 @@ namespace Jannesen.FileFormat.Json
         }
         public                  string                  GetValueStringNullable(string name)
         {
-            object v = GetValueNullable(name);
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
 
             try {
-                return (v == null) ? null : (string)v;
+                return _convertToString(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -92,7 +94,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  Int16                   GetValueInt16(string name)
         {
-            object v = GetValue(name);
+            var v = GetValue(name);
 
             try {
                 return Convert.ToInt16(v);
@@ -103,10 +105,13 @@ namespace Jannesen.FileFormat.Json
         }
         public                  Int16?                  GetValueInt16Nullable(string name)
         {
-            object v = GetValueNullable(name);
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
 
             try {
-                return (v == null) ? (Int16?)v: Convert.ToInt16(v);
+                return Convert.ToInt16(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -114,7 +119,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  int                     GetValueInt(string name)
         {
-            object v = GetValue(name);
+            var v = GetValue(name);
 
             try {
                 return Convert.ToInt32(v);
@@ -125,10 +130,13 @@ namespace Jannesen.FileFormat.Json
         }
         public                  int?                    GetValueIntNullable(string name)
         {
-            object v = GetValueNullable(name);
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
 
             try {
-                return (v == null) ? (int?)v: Convert.ToInt32(v);
+                return Convert.ToInt32(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -136,10 +144,10 @@ namespace Jannesen.FileFormat.Json
         }
         public                  DateTime                GetValueDateTime(string name)
         {
-            string v = GetValueString(name);
+            var v = GetValueString(name);
 
             try {
-                return ConvertStringToDateTime(v);
+                return _convertToDateTime(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -147,13 +155,13 @@ namespace Jannesen.FileFormat.Json
         }
         public                  DateTime?               GetValueDateTimeNullable(string name)
         {
-            string v = GetValueStringNullable(name);
+            var v = GetValueStringNullable(name);
 
             if (v == null)
                 return null;
 
             try {
-                return ConvertStringToDateTime(v);
+                return _convertToDateTime(v);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -162,23 +170,48 @@ namespace Jannesen.FileFormat.Json
         public                  JsonObject              GetValueObject(string name)
         {
             if (TryGetValue(name, out var v)) {
-                if (v != null && !(v is JsonObject))
+                if (v != null) {
+                    if (v is JsonObject o)
+                        return o;
+
                     throw new FormatException("Invalid value JSON object field '" + name + "'.");
+                }
             }
 
-            return (JsonObject)v;
+            return null;
         }
         public                  JsonArray               GetValueArray(string name)
         {
             if (TryGetValue(name, out var v)) {
-                if (v != null && !(v is JsonArray))
-                    throw new FormatException("Invalid value JSON object field '" + name + "'.");
+                if (v != null) {
+                    if (v is JsonArray a)
+                        return a;
+
+                    throw new FormatException("Invalid value JSON array field '" + name + "'.");
+                }
             }
 
-            return (JsonArray)v;
+            return null;
         }
 
-        private     static      DateTime                ConvertStringToDateTime(string sValue)
+        private     static      string                  _convertToString(object v)
+        {
+            if (v is string s)  return s;
+            if (v is Int64  i)  return i.ToString();
+
+            throw new FormatException("Invalid string value");
+        }
+        private     static      bool                    _convertToBoolean(object v)
+        {
+            if (v is bool b)    return b;
+            if (v is Int64 i) {
+                if (i == 0) return false;
+                if (i == 1) return true;
+            }
+
+            throw new FormatException("Invalid boolean value");
+        }
+        private     static      DateTime                _convertToDateTime(string sValue)
         {
             int     fieldpos = 0;
             int[]   fields   = new int[7];
