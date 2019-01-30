@@ -92,6 +92,31 @@ namespace Jannesen.FileFormat.Json
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
             }
         }
+        public                  bool                    GetValueBoolean(string name)
+        {
+            var v = GetValue(name);
+
+            try {
+                return _convertToBoolean(v);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
+        public                  bool?                   GetValueBooleanNullable(string name)
+        {
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
+
+            try {
+                return _convertToBoolean(v);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
         public                  Int16                   GetValueInt16(string name)
         {
             var v = GetValue(name);
