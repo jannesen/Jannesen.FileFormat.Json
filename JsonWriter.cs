@@ -43,6 +43,17 @@ namespace Jannesen.FileFormat.Json
                 _textWriter.Dispose();
         }
 
+        public  static          string                  Stringify(object value)
+        {
+            using (var stringWriter = new StringWriter()) {
+                using (var jsonWriter = new JsonWriter(stringWriter, true)) {
+                    jsonWriter.WriteValue(value);
+                }
+
+                return stringWriter.ToString();
+            }
+        }
+
         public                  void                    Flush()
         {
             while (_domStatus.Count > 0) {

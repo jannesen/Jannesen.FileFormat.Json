@@ -8,6 +8,7 @@ namespace Jannesen.FileFormat.Json
     public sealed class JsonReader: IDisposable
     {
         private                 TextReader              _textReader;
+        private                 bool                    _keepopen;
         private                 int                     _lineNumber;
         private                 int                     _linePosition;
         private                 int                     _undoChar;
@@ -25,42 +26,38 @@ namespace Jannesen.FileFormat.Json
             }
         }
 
-        private                                         JsonReader(TextReader textReader)
+        public                                          JsonReader(TextReader textReader, bool keepopen=false)
         {
-            _textReader = textReader;
+            _textReader   = textReader;
+            _keepopen     = keepopen;
             _lineNumber   = 1;
             _linePosition = 0;
             _undoChar     = -1;
         }
         public                  void                    Dispose()
         {
-            _textReader.Dispose();
+            if (!_keepopen) {
+                _textReader.Dispose();
+            }
         }
 
-        public      static      object                  Parse(string s)
+        public      static      object                  ParseString(string s)
         {
-            using (TextReader stream = new StringReader(s))
-                return Parse(stream);
-        }
-        public      static      object                  Parse(TextReader stream)
-        {
-            using(JsonReader reader = new JsonReader(stream))
-            {
-                object rtn = reader.ParseNode();
-
-                //test eof
-                return rtn;
+            using (var reader = new JsonReader(new StringReader(s))) {
+                return reader.ParseDocument();
             }
         }
         public      static      object                  ParseFile(string fileName)
         {
-            using(JsonReader reader = new JsonReader(new StreamReader(fileName)))
-            {
-                object rtn = reader.ParseNode();
-
-                //test eof
-                return rtn;
+            using(var reader = new JsonReader(new StreamReader(fileName))) {
+                return reader.ParseDocument();
             }
+        }
+        public                  object                  ParseDocument()
+        {
+            var n = ParseNode();
+            //test eof
+            return n;
         }
         public                  object                  ParseNode()
         {
@@ -206,7 +203,7 @@ namespace Jannesen.FileFormat.Json
 
             if ((int)'0' <= c && c <= (int)'9')     return c - (int)'0';
             if ((int)'A' <= c && c <= (int)'F')     return c - (int)'A' + 10;
-            if ((int)'a' <= c && c <= (int)'F')     return c - (int)'a' + 10;
+            if ((int)'a' <= c && c <= (int)'f')     return c - (int)'a' + 10;
 
             throw new JsonReaderException("Invalid hexadecimal digit.", this);
         }

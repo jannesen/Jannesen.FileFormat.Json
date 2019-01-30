@@ -67,8 +67,7 @@ namespace Jannesen.FileFormat.Json
                 case XmlNodeType.EndElement:
                     return jsonObject;
 
-                case XmlNodeType.Element:
-                    {
+                case XmlNodeType.Element: {
                         string  name = xmlReader.Name;
 
                         try {
