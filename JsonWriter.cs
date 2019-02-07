@@ -43,7 +43,8 @@ namespace Jannesen.FileFormat.Json
                 _textWriter.Dispose();
         }
 
-        public  static          string                  Stringify(object value)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+        public static          string                  Stringify(object value)
         {
             using (var stringWriter = new StringWriter()) {
                 using (var jsonWriter = new JsonWriter(stringWriter, true)) {
