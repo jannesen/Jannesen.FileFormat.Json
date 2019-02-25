@@ -167,6 +167,56 @@ namespace Jannesen.FileFormat.Json
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
             }
         }
+        public                  Decimal                 GetValueDecimal(string name)
+        {
+            var v = GetValue(name);
+
+            try {
+                return Convert.ToDecimal(v, System.Globalization.NumberFormatInfo.InvariantInfo);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
+        public                  Decimal?                GetValueDecimalNullable(string name)
+        {
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
+
+            try {
+                return Convert.ToDecimal(v, System.Globalization.NumberFormatInfo.InvariantInfo);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
+        public                  double                  GetValueDouble(string name)
+        {
+            var v = GetValue(name);
+
+            try {
+                return Convert.ToDouble(v, System.Globalization.NumberFormatInfo.InvariantInfo);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
+        public                  double?                 GetValueDoubleNullable(string name)
+        {
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
+
+            try {
+                return Convert.ToDouble(v, System.Globalization.NumberFormatInfo.InvariantInfo);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
         public                  DateTime                GetValueDateTime(string name)
         {
             var v = GetValueString(name);
