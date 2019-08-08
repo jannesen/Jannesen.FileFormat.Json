@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Globalization;
 using System.Xml;
 using System.IO;
 
 namespace Jannesen.FileFormat.Json
 {
-    public class JsonXmlReader
+    public static class JsonXmlReader
     {
         public      static      object              ParseXmlString(string xmlString)
         {
-            using (XmlTextReader xmlReader = new XmlTextReader(new StringReader(xmlString)))
+            if (xmlString is null) throw new ArgumentNullException(nameof(xmlString));
+
+            using (var xmlReader = new XmlTextReader(new StringReader(xmlString)) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null }) { 
                 return Parse(xmlReader);
+            }
         }
-        public      static      object              Parse(XmlTextReader xmlReader)
+        public      static      object              Parse(XmlReader xmlReader)
         {
+            if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
+
             while (xmlReader.NodeType != XmlNodeType.Element)
                 _parseReadNode(xmlReader);
 
@@ -30,7 +36,7 @@ namespace Jannesen.FileFormat.Json
             return _parseToJsonObject(xmlReader);
         }
 
-        private     static      JsonObject          _parseToJsonObject(XmlTextReader xmlReader)
+        private     static      JsonObject          _parseToJsonObject(XmlReader xmlReader)
         {
             JsonObject  jsonObject = new JsonObject();
 
@@ -97,7 +103,7 @@ namespace Jannesen.FileFormat.Json
                 }
             }
         }
-        private     static      JsonArray           _parseToJsonArray(XmlTextReader xmlReader)
+        private     static      JsonArray           _parseToJsonArray(XmlReader xmlReader)
         {
             JsonArray   rtn = new JsonArray();
 
@@ -125,8 +131,8 @@ namespace Jannesen.FileFormat.Json
         {
             switch(t) {
             case 's':   return svalue;
-            case 'i':   return !string.IsNullOrEmpty(svalue) ? (object)int.Parse(svalue, System.Globalization.CultureInfo.InvariantCulture)   : null;
-            case 'n':   return !string.IsNullOrEmpty(svalue) ? (object)double.Parse(svalue, System.Globalization.CultureInfo.InvariantCulture) : null;
+            case 'i':   return !string.IsNullOrEmpty(svalue) ? (object)int.Parse(svalue, CultureInfo.InvariantCulture)   : null;
+            case 'n':   return !string.IsNullOrEmpty(svalue) ? (object)double.Parse(svalue, CultureInfo.InvariantCulture) : null;
 
             case 'b':
                 switch(svalue) {
@@ -141,7 +147,7 @@ namespace Jannesen.FileFormat.Json
                 throw new JsonXmlReaderException("Invalid json-typeinfo in '" + t + "'.");
             }
         }
-        private     static      string              _parseElementValue(XmlTextReader xmlReader)
+        private     static      string              _parseElementValue(XmlReader xmlReader)
         {
             if (!xmlReader.IsEmptyElement) {
                 string  rtn = "";
@@ -172,7 +178,7 @@ namespace Jannesen.FileFormat.Json
                 return "";
             }
         }
-        private     static      void                _parseReadNode(XmlTextReader xmlReader)
+        private     static      void                _parseReadNode(XmlReader xmlReader)
         {
             if (!xmlReader.Read())
                 throw new JsonXmlReaderException("Reading EOF on xml-document.");

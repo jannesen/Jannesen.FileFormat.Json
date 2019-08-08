@@ -13,6 +13,9 @@ namespace Jannesen.FileFormat.Json
         public                              JsonXmlReaderException(string message, Exception innerException): base(message, innerException)
         {
         }
+        protected                           JsonXmlReaderException(SerializationInfo info, StreamingContext context): base(info, context)
+        {
+        }
 
         public  override    string          Source
         {
@@ -30,24 +33,23 @@ namespace Jannesen.FileFormat.Json
 
         public                              JsonReaderException(string message, JsonReader reader): base(message)
         {
+            if (reader is null) throw new ArgumentNullException(nameof(reader));
+
             LineNumber   = reader.LineNumber;
             LinePosition = reader.LinePosition;
         }
 
-        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         protected                           JsonReaderException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            this.LineNumber   = info.GetInt32("LineNumber");
-            this.LinePosition = info.GetInt32("LinePosition");
+            this.LineNumber   = info.GetInt32(nameof(LineNumber));
+            this.LinePosition = info.GetInt32(nameof(LinePosition));
         }
-
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public      override    void        GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-
-            info.AddValue("LineNumber",   this.LineNumber);
-            info.AddValue("LinePosition", this.LinePosition);
+            info.AddValue(nameof(LineNumber),   this.LineNumber);
+            info.AddValue(nameof(LinePosition), this.LinePosition);
         }
 
         public  override    string          Source

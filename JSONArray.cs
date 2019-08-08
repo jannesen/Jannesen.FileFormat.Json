@@ -17,6 +17,8 @@ namespace Jannesen.FileFormat.Json
 
         public      static      JsonArray               Parse(JsonReader reader)
         {
+            if (reader is null) throw new ArgumentNullException(nameof(reader));
+
             JsonArray       rtn = new JsonArray();
 
             if (reader.ReadChar() !=(int)'[')

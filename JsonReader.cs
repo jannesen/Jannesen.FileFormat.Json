@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -7,8 +8,8 @@ namespace Jannesen.FileFormat.Json
 {
     public sealed class JsonReader: IDisposable
     {
-        private                 TextReader              _textReader;
-        private                 bool                    _keepopen;
+        private readonly        TextReader              _textReader;
+        private readonly        bool                    _keepopen;
         private                 int                     _lineNumber;
         private                 int                     _linePosition;
         private                 int                     _undoChar;
@@ -111,7 +112,7 @@ namespace Jannesen.FileFormat.Json
                         if (p == s.Length) {
                             if (double.TryParse(s,
                                                 System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowExponent | System.Globalization.NumberStyles.AllowLeadingSign,
-                                                System.Globalization.CultureInfo.InvariantCulture,
+                                                CultureInfo.InvariantCulture,
                                                 out var rtn))
                                 return rtn;
                         }

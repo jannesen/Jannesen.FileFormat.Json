@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
+using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace Jannesen.FileFormat.Json
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2237:MarkISerializableTypesWithSerializable")]
+    [Serializable]
     public class JsonObject: Dictionary<string, object>
     {
         public      static      JsonObject              Parse(JsonReader reader)
         {
+            if (reader is null) throw new ArgumentNullException(nameof(reader));
+
             JsonObject      rtn = new JsonObject();
 
             if (reader.ReadChar() != (int)'{')
@@ -54,6 +56,10 @@ namespace Jannesen.FileFormat.Json
         public                                          JsonObject(int capacity): base(capacity)
         {
         }
+        protected                                       JsonObject(SerializationInfo info, StreamingContext context): base(info, context)
+        {
+        }
+
         public                  object                  GetValue(string name)
         {
             if (!TryGetValue(name, out var rtn))
@@ -122,7 +128,7 @@ namespace Jannesen.FileFormat.Json
             var v = GetValue(name);
 
             try {
-                return Convert.ToInt16(v);
+                return Convert.ToInt16(v, CultureInfo.InvariantCulture);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -136,7 +142,7 @@ namespace Jannesen.FileFormat.Json
                 return null;
 
             try {
-                return Convert.ToInt16(v);
+                return Convert.ToInt16(v, CultureInfo.InvariantCulture);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -147,7 +153,7 @@ namespace Jannesen.FileFormat.Json
             var v = GetValue(name);
 
             try {
-                return Convert.ToInt32(v);
+                return Convert.ToInt32(v, CultureInfo.InvariantCulture);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -161,7 +167,7 @@ namespace Jannesen.FileFormat.Json
                 return null;
 
             try {
-                return Convert.ToInt32(v);
+                return Convert.ToInt32(v, CultureInfo.InvariantCulture);
             }
             catch(Exception) {
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
@@ -272,7 +278,7 @@ namespace Jannesen.FileFormat.Json
         private     static      string                  _convertToString(object v)
         {
             if (v is string s)  return s;
-            if (v is Int64  i)  return i.ToString();
+            if (v is Int64  i)  return i.ToString(CultureInfo.InvariantCulture);
 
             throw new FormatException("Invalid string value");
         }

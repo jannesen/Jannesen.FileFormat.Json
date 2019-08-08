@@ -21,9 +21,9 @@ namespace Jannesen.FileFormat.Json
             ValueWriten
         }
 
-        private                 TextWriter              _textWriter;
-        private                 bool                    _keepopen;
-        private                 Stack<DomStatus>        _domStatus;
+        private readonly        TextWriter              _textWriter;
+        private readonly        bool                    _keepopen;
+        private readonly        Stack<DomStatus>        _domStatus;
 
         public                                          JsonWriter(TextWriter textWriter): this(textWriter, true)
         {
@@ -43,7 +43,6 @@ namespace Jannesen.FileFormat.Json
                 _textWriter.Dispose();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static          string                  Stringify(object value)
         {
             using (var stringWriter = new StringWriter()) {
@@ -221,6 +220,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteObject(Dictionary<string, object> value)
         {
+            if (value is null) throw new ArgumentNullException(nameof(value));
+
             WriteStartObject();
 
             foreach(KeyValuePair<string, object> nameValue in value)
@@ -230,6 +231,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray(object[] array)
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             WriteStartArray();
 
             foreach(object obj in array)
@@ -239,6 +242,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray<T>(T[] array) where T:IJsonWriter
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             WriteStartArray();
 
             if (array != null) {
@@ -250,6 +255,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray<T>(List<T> array) where T:IJsonWriter
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             WriteStartArray();
 
             if (array != null) {
@@ -261,6 +268,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray(List<object> array)
         {
+            if (array is null) throw new ArgumentNullException(nameof(array));
+
             WriteStartArray();
 
             foreach(object obj in array)
@@ -270,14 +279,18 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteName(string name)
         {
+            if (name is null) throw new ArgumentNullException(nameof(name));
+
             _writeSeparator();
             _writeString(name);
             _textWriter.Write(":");
         }
-        public                  void                    WriteRawValue(string snumber)
+        public                  void                    WriteRawValue(string rawvalue)
         {
+            if (rawvalue is null) throw new ArgumentNullException(nameof(rawvalue));
+
             _writeSeparator();
-            _textWriter.Write(snumber);
+            _textWriter.Write(rawvalue);
             _domStatus.Push(DomStatus.ValueWriten);
         }
 
@@ -324,7 +337,7 @@ namespace Jannesen.FileFormat.Json
         }
         private     static      char                    _nibbleToHex(int nibble)
         {
-            nibble = nibble & 0xF;
+            nibble &= 0xF;
 
             return (nibble < 10) ? (char)((int)'0' + nibble) : (char)((int)'A' + (nibble - 10));
         }
