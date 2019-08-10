@@ -11,7 +11,7 @@ namespace Jannesen.FileFormat.Json
         {
             if (xmlString is null) throw new ArgumentNullException(nameof(xmlString));
 
-            using (var xmlReader = new XmlTextReader(new StringReader(xmlString)) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null }) { 
+            using (var xmlReader = new XmlTextReader(new StringReader(xmlString)) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null }) {
                 return Parse(xmlReader);
             }
         }

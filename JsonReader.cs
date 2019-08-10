@@ -111,7 +111,7 @@ namespace Jannesen.FileFormat.Json
 
                         if (p == s.Length) {
                             if (double.TryParse(s,
-                                                System.Globalization.NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowExponent | System.Globalization.NumberStyles.AllowLeadingSign,
+                                                NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowExponent | System.Globalization.NumberStyles.AllowLeadingSign,
                                                 CultureInfo.InvariantCulture,
                                                 out var rtn))
                                 return rtn;
