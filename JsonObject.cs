@@ -65,6 +65,10 @@ namespace Jannesen.FileFormat.Json
             if (!TryGetValue(name, out var rtn))
                 throw new IndexOutOfRangeException("Unknown field '" + name + "' in JSON object.");
 
+            if (rtn == null) { 
+                throw new FormatException("Field '" + name + "' = null.");
+            }
+
             return rtn;
         }
         public                  object                  GetValueNullable(string name)
