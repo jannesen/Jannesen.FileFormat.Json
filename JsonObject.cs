@@ -279,6 +279,44 @@ namespace Jannesen.FileFormat.Json
             return null;
         }
 
+        public  override        bool                    Equals(object obj)
+        {
+            if (obj is JsonObject other) {
+                if (this.Count != other.Count) {
+                    return false;
+                }
+                foreach(var entry in this) {
+                    if (other.TryGetValue(entry.Key, out var othervalue)) {
+                        if (entry.Value != null ? !entry.Value.Equals(othervalue) : othervalue == null) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        public  override        int                     GetHashCode()
+        {
+            int rtn = 0;
+
+            foreach(var e in this) {
+#if NET46
+                rtn ^= e.Key.GetHashCode();
+#else
+                rtn ^= e.Key.GetHashCode(StringComparison.Ordinal);
+#endif
+
+                if (e.Value != null) {
+                    rtn ^= e.Value.GetHashCode();
+                }                    
+            }
+
+            return rtn;
+        }
+
         private     static      string                  _convertToString(object v)
         {
             if (v is string s)  return s;

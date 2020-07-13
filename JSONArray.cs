@@ -15,6 +15,37 @@ namespace Jannesen.FileFormat.Json
         {
         }
 
+        public  override        bool                    Equals(object obj)
+        {
+            if (obj is JsonArray other) {
+                if (this.Count != other.Count) {
+                    return false;
+                }
+
+                for (int i = 0 ; i < this.Count ; ++i) {
+                    if (this[i] != null ? !this[i].Equals(other[i]) : other[i] == null) {
+                        return false;
+                    }                    
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        public  override        int                     GetHashCode()
+        {
+            int rtn = 0;
+
+            foreach(var e in this) {
+                if (e != null ) {
+                    rtn ^= e.GetHashCode();
+                }                    
+            }
+
+            return rtn;
+        }
+
         public      static      JsonArray               Parse(JsonReader reader)
         {
             if (reader is null) throw new ArgumentNullException(nameof(reader));
