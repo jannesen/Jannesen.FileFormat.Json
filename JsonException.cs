@@ -17,12 +17,7 @@ namespace Jannesen.FileFormat.Json
         {
         }
 
-        public  override    string          Source
-        {
-            get {
-                return "Jannesen.FileFormat.Json";
-            }
-        }
+        public  override    string          Source      => "Jannesen.FileFormat.Json";
     }
 
     [Serializable]
@@ -52,11 +47,6 @@ namespace Jannesen.FileFormat.Json
             info.AddValue(nameof(LinePosition), this.LinePosition);
         }
 
-        public  override    string          Source
-        {
-            get {
-                return "Jannesen.FileFormat.Json";
-            }
-        }
+        public  override    string          Source      => "Jannesen.FileFormat.Json";
     }
 }

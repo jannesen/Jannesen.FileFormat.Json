@@ -14,18 +14,8 @@ namespace Jannesen.FileFormat.Json
         private                 int                     _linePosition;
         private                 int                     _undoChar;
 
-        public                  int                     LineNumber
-        {
-            get {
-                return _lineNumber;
-            }
-        }
-        public                  int                     LinePosition
-        {
-            get {
-                return _linePosition;
-            }
-        }
+        public                  int                     LineNumber      => _lineNumber;
+        public                  int                     LinePosition    => _linePosition;
 
         public                                          JsonReader(TextReader textReader, bool keepopen=false)
         {

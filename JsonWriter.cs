@@ -298,7 +298,11 @@ namespace Jannesen.FileFormat.Json
         {
             _textWriter.Write('\"');
 
+#if NET46
             value = value.Replace("\r\n", "\n");
+#else
+            value = value.Replace("\r\n", "\n", StringComparison.Ordinal);
+#endif
 
             for(int i = 0 ; i < value.Length ; ++i) {
                 char c = value[i];
