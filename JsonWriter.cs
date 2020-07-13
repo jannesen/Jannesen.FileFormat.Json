@@ -144,6 +144,11 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteDouble(value);
         }
+        public                  void                    WriteNameValue(string name, DateTime value)
+        {
+            WriteName(name);
+            WriteDateTime(value);
+        }
         public                  void                    WriteNameValue(string name, IJsonWriter value)
         {
             WriteName(name);
@@ -170,21 +175,22 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteValue(object value)
         {
-            if (value == null                       ) { WriteNull   (                                 ); return; }
-            if (value is string                     ) { WriteString ((string                    )value); return; }
-            if (value is int                        ) { WriteInt    ((int                       )value); return; }
-            if (value is byte                       ) { WriteInt    ((byte                      )value); return; }
-            if (value is Int16                      ) { WriteInt    ((Int16                     )value); return; }
-            if (value is Int32                      ) { WriteInt    ((Int32                     )value); return; }
-            if (value is Int64                      ) { WriteInt    ((Int64                     )value); return; }
-            if (value is decimal                    ) { WriteDecimal((decimal                   )value); return; }
-            if (value is float                      ) { WriteDouble ((float                     )value); return; }
-            if (value is double                     ) { WriteDouble ((double                    )value); return; }
-            if (value is bool                       ) { WriteBool   ((bool                      )value); return; }
+            if (value == null                       ) { WriteNull    (                                 ); return; }
+            if (value is string                     ) { WriteString  ((string                    )value); return; }
+            if (value is int                        ) { WriteInt     ((int                       )value); return; }
+            if (value is byte                       ) { WriteInt     ((byte                      )value); return; }
+            if (value is Int16                      ) { WriteInt     ((Int16                     )value); return; }
+            if (value is Int32                      ) { WriteInt     ((Int32                     )value); return; }
+            if (value is Int64                      ) { WriteInt     ((Int64                     )value); return; }
+            if (value is decimal                    ) { WriteDecimal ((decimal                   )value); return; }
+            if (value is float                      ) { WriteDouble  ((float                     )value); return; }
+            if (value is double                     ) { WriteDouble  ((double                    )value); return; }
+            if (value is bool                       ) { WriteBool    ((bool                      )value); return; }
+            if (value is DateTime                   ) { WriteDateTime((DateTime                  )value); return; }
             if (value is IJsonWriter                ) { ((IJsonWriter)value).WriteTo(this); return;              }
-            if (value is Dictionary<string, object> ) { WriteObject ((Dictionary<string, object>)value); return; }
-            if (value is object[]                   ) { WriteArray  ((object[]                  )value); return; }
-            if (value is List<object>               ) { WriteArray  ((List<object>              )value); return; }
+            if (value is Dictionary<string, object> ) { WriteObject  ((Dictionary<string, object>)value); return; }
+            if (value is object[]                   ) { WriteArray   ((object[]                  )value); return; }
+            if (value is List<object>               ) { WriteArray   ((List<object>              )value); return; }
 
             throw new ArgumentException("Invalid argument type " + value.GetType().FullName + ".");
         }
@@ -217,6 +223,10 @@ namespace Jannesen.FileFormat.Json
         public                  void                    WriteBool(bool value)
         {
             WriteRawValue(value ? "true" : "false");
+        }
+        public                  void                    WriteDateTime(DateTime value)
+        {
+            WriteString(value.ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
         }
         public                  void                    WriteObject(Dictionary<string, object> value)
         {
