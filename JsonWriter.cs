@@ -23,15 +23,20 @@ namespace Jannesen.FileFormat.Json
 
         private readonly        TextWriter              _textWriter;
         private readonly        bool                    _keepopen;
+        private readonly        bool                    _ascii;
         private readonly        Stack<DomStatus>        _domStatus;
 
         public                                          JsonWriter(TextWriter textWriter): this(textWriter, true)
         {
         }
-        public                                          JsonWriter(TextWriter textWriter, bool keepopen)
+        public                                          JsonWriter(TextWriter textWriter, bool keepopen): this(textWriter, keepopen, false)
+        {
+        }
+        public                                          JsonWriter(TextWriter textWriter, bool keepopen, bool ascii)
         {
             _textWriter = textWriter;
             _keepopen   = keepopen;
+            _ascii      = ascii;
             _domStatus  = new Stack<DomStatus>();
             _domStatus.Push(DomStatus.BeginOfFile);
         }
@@ -327,7 +332,7 @@ namespace Jannesen.FileFormat.Json
                 case '\t':  _textWriter.Write("\\t");       break;
 
                 default:
-                    if (c >= 0x20)
+                    if (c >= 0x20 && (c <= 0x7f || !_ascii))
                         _textWriter.Write(c);
                     else {
                         _textWriter.Write("\\u");
