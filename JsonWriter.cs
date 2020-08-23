@@ -48,10 +48,10 @@ namespace Jannesen.FileFormat.Json
                 _textWriter.Dispose();
         }
 
-        public static          string                  Stringify(object value)
+        public static          string                   Stringify(object value, bool ascii=false)
         {
             using (var stringWriter = new StringWriter()) {
-                using (var jsonWriter = new JsonWriter(stringWriter, true)) {
+                using (var jsonWriter = new JsonWriter(stringWriter, true, ascii)) {
                     jsonWriter.WriteValue(value);
                 }
 
