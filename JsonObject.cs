@@ -303,7 +303,7 @@ namespace Jannesen.FileFormat.Json
             int rtn = 0;
 
             foreach(var e in this) {
-#if NET46
+#if NET48
                 rtn ^= e.Key.GetHashCode();
 #else
                 rtn ^= e.Key.GetHashCode(StringComparison.Ordinal);

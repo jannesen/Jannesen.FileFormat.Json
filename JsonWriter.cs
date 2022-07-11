@@ -313,7 +313,7 @@ namespace Jannesen.FileFormat.Json
         {
             _textWriter.Write('\"');
 
-#if NET46
+#if NET48
             value = value.Replace("\r\n", "\n");
 #else
             value = value.Replace("\r\n", "\n", StringComparison.Ordinal);
