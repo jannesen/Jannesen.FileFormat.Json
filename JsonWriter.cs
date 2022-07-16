@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace Jannesen.FileFormat.Json
 {
@@ -168,7 +167,7 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteArray(value);
         }
-        public                  void                    WriteNameValue<T>(string name, List<T> value) where T: IJsonWriter
+        public                  void                    WriteNameValue<T>(string name, IReadOnlyCollection<T> value) where T: IJsonWriter
         {
             WriteName(name);
             WriteArray(value);
@@ -268,7 +267,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray<T>(List<T> array) where T:IJsonWriter
+        public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonWriter
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
 
@@ -281,7 +280,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray(List<object> array)
+        public                  void                    WriteArray(IReadOnlyCollection<object> array)
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
 
