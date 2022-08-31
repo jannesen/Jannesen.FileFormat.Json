@@ -3,7 +3,7 @@
     <RootNamespace>Jannesen.FileFormat.Json</RootNamespace>
     <AssemblyName>Jannesen.FileFormat.Json</AssemblyName>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net48</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0</TargetFrameworks>
     <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>

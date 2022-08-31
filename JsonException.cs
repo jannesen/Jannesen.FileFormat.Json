@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
+#if NET48
 using System.Security.Permissions;
+#endif
 
 namespace Jannesen.FileFormat.Json
 {
@@ -39,7 +41,9 @@ namespace Jannesen.FileFormat.Json
             this.LineNumber   = info.GetInt32(nameof(LineNumber));
             this.LinePosition = info.GetInt32(nameof(LinePosition));
         }
+#if NET48
         [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+#endif
         public      override    void        GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
