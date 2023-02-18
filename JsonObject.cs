@@ -127,6 +127,31 @@ namespace Jannesen.FileFormat.Json
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
             }
         }
+        public                  byte                    GetValueByte(string name)
+        {
+            var v = GetValue(name);
+
+            try {
+                return Convert.ToByte(v, CultureInfo.InvariantCulture);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
+        public                  byte?                   GetValueByteNullable(string name)
+        {
+            var v = GetValueNullable(name);
+
+            if (v == null)
+                return null;
+
+            try {
+                return Convert.ToByte(v, CultureInfo.InvariantCulture);
+            }
+            catch(Exception) {
+                throw new FormatException("Invalid value JSON object field '" + name + "'.");
+            }
+        }
         public                  Int16                   GetValueInt16(string name)
         {
             var v = GetValue(name);
