@@ -164,7 +164,7 @@ namespace Jannesen.FileFormat.Json
                     case 'n':       c = (int)'\n';      break;
                     case 'r':       c = (int)'\r';      break;
                     case 't':       c = (int)'\t';      break;
-                    case 'u':       c = (ReadCharHex() << 24) | (ReadCharHex() << 16) | (ReadCharHex() << 8) | (ReadCharHex() << 4);        break;
+                    case 'u':       c = (ReadCharHex() << 12) | (ReadCharHex() << 8) | (ReadCharHex() << 4) | (ReadCharHex() << 0);        break;
                     }
                 }
 

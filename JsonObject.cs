@@ -290,6 +290,10 @@ namespace Jannesen.FileFormat.Json
 
             return null;
         }
+        public                  JsonObject              GetValueObjectRequired(string name)
+        {
+            return GetValueObject(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
+        }
         public                  JsonArray               GetValueArray(string name)
         {
             if (TryGetValue(name, out var v)) {
@@ -302,6 +306,10 @@ namespace Jannesen.FileFormat.Json
             }
 
             return null;
+        }
+        public                  JsonArray               GetValueArrayRequired(string name)
+        {
+            return GetValueArray(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
         }
 
         public  override        bool                    Equals(object obj)
