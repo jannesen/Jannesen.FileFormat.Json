@@ -7,17 +7,17 @@ namespace Jannesen.FileFormat.Json
 {
     public static class JsonXmlReader
     {
-        public      static      object              ParseXmlString(string xmlString)
+        public      static      object?             ParseXmlString(string xmlString)
         {
-            if (xmlString is null) throw new ArgumentNullException(nameof(xmlString));
+            ArgumentNullException.ThrowIfNull(xmlString);
 
             using (var xmlReader = new XmlTextReader(new StringReader(xmlString)) { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null }) {
                 return Parse(xmlReader);
             }
         }
-        public      static      object              Parse(XmlReader xmlReader)
+        public      static      object?             Parse(XmlReader xmlReader)
         {
-            if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
+            ArgumentNullException.ThrowIfNull(xmlReader);
 
             while (xmlReader.NodeType != XmlNodeType.Element)
                 _parseReadNode(xmlReader);
@@ -37,9 +37,9 @@ namespace Jannesen.FileFormat.Json
             return _parseToJsonObject(xmlReader);
         }
 
-        private     static      object              _parseToJsonChild(XmlReader xmlReader)
+        private     static      object?             _parseToJsonChild(XmlReader xmlReader)
         {
-            object  rtn = null;
+            object? rtn = null;
 
             if (!xmlReader.IsEmptyElement) {
                 _parseReadNode(xmlReader);
@@ -130,8 +130,9 @@ namespace Jannesen.FileFormat.Json
                                     if (!(obj is JsonArray))
                                         throw new JsonXmlReaderException("Variable already defined as a non-array.");
                                 }
-                                else
+                                else {
                                     jsonObject.Add(xmlReader.Name, obj = new JsonArray());
+                                }
 
                                 ((JsonArray)obj).Add(_parseToJsonObject(xmlReader));
                             }
@@ -168,7 +169,7 @@ namespace Jannesen.FileFormat.Json
 
             return rtn;
         }
-        private     static      object              _jsonConvertValue(char t, string svalue)
+        private     static      object?             _jsonConvertValue(char t, string? svalue)
         {
             switch(t) {
             case 's':   return svalue;
@@ -188,7 +189,7 @@ namespace Jannesen.FileFormat.Json
                 throw new JsonXmlReaderException("Invalid json-typeinfo in '" + t + "'.");
             }
         }
-        private     static      string              _parseElementValue(XmlReader xmlReader)
+        private     static      string?             _parseElementValue(XmlReader xmlReader)
         {
             if (!xmlReader.IsEmptyElement) {
                 string  rtn = "";

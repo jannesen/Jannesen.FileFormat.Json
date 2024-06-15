@@ -115,7 +115,7 @@ namespace Jannesen.FileFormat.Json
             _textWriter.Write("]");
             _domStatus.Push(DomStatus.ValueWriten);
         }
-        public                  void                    WriteNameValue(string name, string value)
+        public                  void                    WriteNameValue(string name, string? value)
         {
             WriteName(name);
             if (value != null)
@@ -172,29 +172,29 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteArray(value);
         }
-        public                  void                    WriteNameValue(string name, object value)
+        public                  void                    WriteNameValue(string name, object? value)
         {
             WriteName(name);
             WriteValue(value);
         }
-        public                  void                    WriteValue(object value)
+        public                  void                    WriteValue(object? value)
         {
-            if (value == null                       ) { WriteNull    (                                 ); return; }
-            if (value is string                     ) { WriteString  ((string                    )value); return; }
-            if (value is int                        ) { WriteInt     ((int                       )value); return; }
-            if (value is byte                       ) { WriteInt     ((byte                      )value); return; }
-            if (value is Int16                      ) { WriteInt     ((Int16                     )value); return; }
-            if (value is Int32                      ) { WriteInt     ((Int32                     )value); return; }
-            if (value is Int64                      ) { WriteInt     ((Int64                     )value); return; }
-            if (value is decimal                    ) { WriteDecimal ((decimal                   )value); return; }
-            if (value is float                      ) { WriteDouble  ((float                     )value); return; }
-            if (value is double                     ) { WriteDouble  ((double                    )value); return; }
-            if (value is bool                       ) { WriteBool    ((bool                      )value); return; }
-            if (value is DateTime                   ) { WriteDateTime((DateTime                  )value); return; }
-            if (value is IJsonWriter                ) { ((IJsonWriter)value).WriteTo(this); return;              }
-            if (value is Dictionary<string, object> ) { WriteObject  ((Dictionary<string, object>)value); return; }
-            if (value is object[]                   ) { WriteArray   ((object[]                  )value); return; }
-            if (value is List<object>               ) { WriteArray   ((List<object>              )value); return; }
+            if (value == null                       )                   { WriteNull    ();                      return; }
+            if (value is string                     string_value)       { WriteString  (string_value);          return; }
+            if (value is int                        int_value)          { WriteInt     (int_value);             return; }
+            if (value is byte                       byte_value)         { WriteInt     (byte_value);            return; }
+            if (value is Int16                      int16_value)        { WriteInt     (int16_value);           return; }
+            if (value is Int32                      int32_value)        { WriteInt     (int32_value);           return; }
+            if (value is Int64                      int64_value)        { WriteInt     (int64_value);           return; }
+            if (value is decimal                    decimal_value)      { WriteDecimal (decimal_value);         return; }
+            if (value is float                      float_value)        { WriteDouble  (float_value);           return; }
+            if (value is double                     double_value)       { WriteDouble  (double_value);          return; }
+            if (value is bool                       bool_value)         { WriteBool    (bool_value);            return; }
+            if (value is DateTime                   datetime_value)     { WriteDateTime(datetime_value);        return; }
+            if (value is IJsonWriter                jsonwrite_value)    { jsonwrite_value.WriteTo(this);        return; }
+            if (value is Dictionary<string, object> dictionay_value)    { WriteObject  (dictionay_value);       return; }
+            if (value is object[]                   objectarray_value)  { WriteArray   (objectarray_value);     return; }
+            if (value is List<object>               listobject_value)   { WriteArray   (listobject_value);      return; }
 
             throw new ArgumentException("Invalid argument type " + value.GetType().FullName + ".");
         }
@@ -202,7 +202,7 @@ namespace Jannesen.FileFormat.Json
         {
             WriteRawValue("null");
         }
-        public                  void                    WriteString(string value)
+        public                  void                    WriteString(string? value)
         {
             if (value != null) {
                 _writeSeparator();
@@ -234,29 +234,29 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteObject(Dictionary<string, object> value)
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
 
             WriteStartObject();
 
-            foreach(KeyValuePair<string, object> nameValue in value)
+            foreach(var nameValue in value)
                 WriteNameValue(nameValue.Key, nameValue.Value);
 
             WriteEndObject();
         }
         public                  void                    WriteArray(object[] array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array);
 
             WriteStartArray();
 
-            foreach(object obj in array)
+            foreach(var obj in array)
                 WriteValue(obj);
 
             WriteEndArray();
         }
         public                  void                    WriteArray<T>(T[] array) where T:IJsonWriter
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array);
 
             WriteStartArray();
 
@@ -269,7 +269,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonWriter
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array);
 
             WriteStartArray();
 
@@ -282,7 +282,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteArray(IReadOnlyCollection<object> array)
         {
-            if (array is null) throw new ArgumentNullException(nameof(array));
+            ArgumentNullException.ThrowIfNull(array);
 
             WriteStartArray();
 
@@ -293,7 +293,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteName(string name)
         {
-            if (name is null) throw new ArgumentNullException(nameof(name));
+            ArgumentNullException.ThrowIfNull(name);
 
             _writeSeparator();
             _writeString(name);
@@ -301,7 +301,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteRawValue(string rawvalue)
         {
-            if (rawvalue is null) throw new ArgumentNullException(nameof(rawvalue));
+            ArgumentNullException.ThrowIfNull(rawvalue);
 
             _writeSeparator();
             _textWriter.Write(rawvalue);
@@ -312,11 +312,7 @@ namespace Jannesen.FileFormat.Json
         {
             _textWriter.Write('\"');
 
-#if NET48
-            value = value.Replace("\r\n", "\n");
-#else
             value = value.Replace("\r\n", "\n", StringComparison.Ordinal);
-#endif
 
             for(int i = 0 ; i < value.Length ; ++i) {
                 char c = value[i];

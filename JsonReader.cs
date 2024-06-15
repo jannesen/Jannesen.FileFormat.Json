@@ -32,25 +32,25 @@ namespace Jannesen.FileFormat.Json
             }
         }
 
-        public      static      object                  ParseString(string s)
+        public      static      object?                 ParseString(string s)
         {
             using (var reader = new JsonReader(new StringReader(s))) {
                 return reader.ParseDocument();
             }
         }
-        public      static      object                  ParseFile(string fileName)
+        public      static      object?                 ParseFile(string fileName)
         {
             using(var reader = new JsonReader(new StreamReader(fileName))) {
                 return reader.ParseDocument();
             }
         }
-        public                  object                  ParseDocument()
+        public                  object?                 ParseDocument()
         {
             var n = ParseNode();
             //test eof
             return n;
         }
-        public                  object                  ParseNode()
+        public                  object?                 ParseNode()
         {
             int             c = SkipWhiteSpace();
 

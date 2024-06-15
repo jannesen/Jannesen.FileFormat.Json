@@ -5,12 +5,14 @@ using System.Runtime.Serialization;
 
 namespace Jannesen.FileFormat.Json
 {
+#if NET48
     [Serializable]
-    public class JsonObject: Dictionary<string, object>
+#endif
+    public class JsonObject: Dictionary<string, object?>
     {
         public      static      JsonObject              Parse(JsonReader reader)
         {
-            if (reader is null) throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
             JsonObject      rtn = new JsonObject();
 
@@ -56,14 +58,16 @@ namespace Jannesen.FileFormat.Json
         public                                          JsonObject(int capacity): base(capacity)
         {
         }
+#if NET48
         protected                                       JsonObject(SerializationInfo info, StreamingContext context): base(info, context)
         {
         }
+#endif
 
         public                  object                  GetValue(string name)
         {
             if (!TryGetValue(name, out var rtn))
-                throw new IndexOutOfRangeException("Unknown field '" + name + "' in JSON object.");
+                throw new KeyNotFoundException("Unknown field '" + name + "' in JSON object.");
 
             if (rtn == null) { 
                 throw new FormatException("Field '" + name + "' = null.");
@@ -71,7 +75,7 @@ namespace Jannesen.FileFormat.Json
 
             return rtn;
         }
-        public                  object                  GetValueNullable(string name)
+        public                  object?                 GetValueNullable(string name)
         {
             TryGetValue(name, out var rtn);
 
@@ -88,7 +92,7 @@ namespace Jannesen.FileFormat.Json
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
             }
         }
-        public                  string                  GetValueStringNullable(string name)
+        public                  string?                 GetValueStringNullable(string name)
         {
             var v = GetValueNullable(name);
 
@@ -277,7 +281,7 @@ namespace Jannesen.FileFormat.Json
                 throw new FormatException("Invalid value JSON object field '" + name + "'.");
             }
         }
-        public                  JsonObject              GetValueObject(string name)
+        public                  JsonObject?             GetValueObject(string name)
         {
             if (TryGetValue(name, out var v)) {
                 if (v != null) {
@@ -294,7 +298,7 @@ namespace Jannesen.FileFormat.Json
         {
             return GetValueObject(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
         }
-        public                  JsonArray               GetValueArray(string name)
+        public                  JsonArray?              GetValueArray(string name)
         {
             if (TryGetValue(name, out var v)) {
                 if (v != null) {
@@ -312,7 +316,7 @@ namespace Jannesen.FileFormat.Json
             return GetValueArray(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
         }
 
-        public  override        bool                    Equals(object obj)
+        public  override        bool                    Equals(object? obj)
         {
             if (obj is JsonObject other) {
                 if (this.Count != other.Count) {

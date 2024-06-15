@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Jannesen.FileFormat.Json
 {
-    [Serializable]
-    public class JsonArray: List<object>
+    public class JsonArray: List<object?>
     {
         public                                          JsonArray()
         {
@@ -15,7 +14,7 @@ namespace Jannesen.FileFormat.Json
         {
         }
 
-        public  override        bool                    Equals(object obj)
+        public  override        bool                    Equals(object? obj)
         {
             if (obj is JsonArray other) {
                 if (this.Count != other.Count) {
@@ -23,7 +22,7 @@ namespace Jannesen.FileFormat.Json
                 }
 
                 for (int i = 0 ; i < this.Count ; ++i) {
-                    if (this[i] != null ? !this[i].Equals(other[i]) : other[i] == null) {
+                    if (!object.Equals(this[i], other[i])) {
                         return false;
                     }                    
                 }
@@ -48,7 +47,7 @@ namespace Jannesen.FileFormat.Json
 
         public      static      JsonArray               Parse(JsonReader reader)
         {
-            if (reader is null) throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
             JsonArray       rtn = new JsonArray();
 
