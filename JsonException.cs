@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
-#if NET48
-using System.Security.Permissions;
-#endif
 
 namespace Jannesen.FileFormat.Json
 {

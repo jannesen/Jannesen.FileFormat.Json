@@ -48,7 +48,7 @@ namespace Jannesen.FileFormat.Json
                     throw new JsonXmlReaderException("Unexpected node '" + xmlReader.NodeType + "' in child.");
                 }
 
-                string  name = xmlReader.Name;
+                var name = xmlReader.Name;
 
                 try {
                     if (name.Length > 3 && name[0] == '_' && name[2] == '_') {
@@ -78,13 +78,13 @@ namespace Jannesen.FileFormat.Json
         }
         private     static      JsonObject          _parseToJsonObject(XmlReader xmlReader)
         {
-            JsonObject  jsonObject = new JsonObject();
+            var jsonObject = new JsonObject();
 
             if (xmlReader.MoveToFirstAttribute()) {
                 do {
                     if (string.IsNullOrEmpty(xmlReader.NamespaceURI)) {
-                        string name   = xmlReader.Name;
-                        string svalue = xmlReader.Value;
+                        var name   = xmlReader.Name;
+                        var svalue = xmlReader.Value;
 
                         if (name.Length > 3 && name[0] == '_' && name[2] == '_') {
                             try {
@@ -114,7 +114,7 @@ namespace Jannesen.FileFormat.Json
                     return jsonObject;
 
                 case XmlNodeType.Element: {
-                        string  name = xmlReader.Name;
+                        var name = xmlReader.Name;
 
                         try {
                             if (name.Length > 3 && name[0] == '_' && name[2] == '_') {
@@ -126,15 +126,16 @@ namespace Jannesen.FileFormat.Json
                                 }
                             }
                             else {
+                                JsonArray? a;
                                 if (jsonObject.TryGetValue(name, out var obj)) {
-                                    if (!(obj is JsonArray))
+                                    if ((a = obj as JsonArray) == null)
                                         throw new JsonXmlReaderException("Variable already defined as a non-array.");
                                 }
                                 else {
-                                    jsonObject.Add(xmlReader.Name, obj = new JsonArray());
+                                    jsonObject.Add(xmlReader.Name, a = new JsonArray());
                                 }
 
-                                ((JsonArray)obj).Add(_parseToJsonObject(xmlReader));
+                                a.Add(_parseToJsonObject(xmlReader));
                             }
                         }
                         catch(Exception err) {
@@ -147,7 +148,7 @@ namespace Jannesen.FileFormat.Json
         }
         private     static      JsonArray           _parseToJsonArray(XmlReader xmlReader)
         {
-            JsonArray   rtn = new JsonArray();
+            var rtn = new JsonArray();
 
             if (!xmlReader.IsEmptyElement) {
                 for (;;) {
@@ -192,7 +193,7 @@ namespace Jannesen.FileFormat.Json
         private     static      string?             _parseElementValue(XmlReader xmlReader)
         {
             if (!xmlReader.IsEmptyElement) {
-                string  rtn = "";
+                var rtn = "";
 
                 for (;;) {
                     _parseReadNode(xmlReader);

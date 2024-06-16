@@ -1,29 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Runtime.Serialization;
 
 namespace Jannesen.FileFormat.Json
 {
-#if NET48
-    [Serializable]
-#endif
     public class JsonObject: Dictionary<string, object?>
     {
         public      static      JsonObject              Parse(JsonReader reader)
         {
             ArgumentNullException.ThrowIfNull(reader);
 
-            JsonObject      rtn = new JsonObject();
+            var rtn = new JsonObject();
 
             if (reader.ReadChar() != (int)'{')
                 throw new JsonReaderException("Expect '{'", reader);
 
-            int c= reader.SkipWhiteSpace();
+            var c= reader.SkipWhiteSpace();
 
             while (c != (int)'}') {
                 {
-                    string name = (c == (int)'\'' || c == (int)'"') ? reader.ReadString() : reader.ReadChars();
+                    var name = (c == (int)'\'' || c == (int)'"') ? reader.ReadString() : reader.ReadChars();
 
                     c = reader.SkipWhiteSpace();
                     if (c != ':')
@@ -337,14 +333,10 @@ namespace Jannesen.FileFormat.Json
         }
         public  override        int                     GetHashCode()
         {
-            int rtn = 0;
+            var rtn = 0;
 
             foreach(var e in this) {
-#if NET48
-                rtn ^= e.Key.GetHashCode();
-#else
                 rtn ^= e.Key.GetHashCode(StringComparison.Ordinal);
-#endif
 
                 if (e.Value != null) {
                     rtn ^= e.Value.GetHashCode();
@@ -373,12 +365,12 @@ namespace Jannesen.FileFormat.Json
         }
         private     static      DateTime                _convertToDateTime(string sValue)
         {
-            int     fieldpos = 0;
-            int[]   fields   = new int[7];
-            int     factor   = 0;
+            var fieldpos = 0;
+            var fields   = new int[7];
+            var factor   = 0;
 
-            for (int pos = 0 ; pos<sValue.Length ; ++pos) {
-                char    chr = sValue[pos];
+            for (var pos = 0 ; pos<sValue.Length ; ++pos) {
+                var chr = sValue[pos];
 
                 if (chr>='0' && chr <='9') {
                     if (fieldpos<6)

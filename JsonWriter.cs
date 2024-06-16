@@ -286,7 +286,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteStartArray();
 
-            foreach(object obj in array)
+            foreach(var obj in array)
                 WriteValue(obj);
 
             WriteEndArray();
@@ -314,8 +314,8 @@ namespace Jannesen.FileFormat.Json
 
             value = value.Replace("\r\n", "\n", StringComparison.Ordinal);
 
-            for(int i = 0 ; i < value.Length ; ++i) {
-                char c = value[i];
+            for(var i = 0 ; i < value.Length ; ++i) {
+                var c = value[i];
 
                 switch (c) {
                 case '"':   _textWriter.Write("\\\"");      break;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace Jannesen.FileFormat.Json
 {
@@ -21,7 +19,7 @@ namespace Jannesen.FileFormat.Json
                     return false;
                 }
 
-                for (int i = 0 ; i < this.Count ; ++i) {
+                for (var i = 0 ; i < this.Count ; ++i) {
                     if (!object.Equals(this[i], other[i])) {
                         return false;
                     }                    
@@ -34,7 +32,7 @@ namespace Jannesen.FileFormat.Json
         }
         public  override        int                     GetHashCode()
         {
-            int rtn = 0;
+            var rtn = 0;
 
             foreach(var e in this) {
                 if (e != null ) {
@@ -49,12 +47,12 @@ namespace Jannesen.FileFormat.Json
         {
             ArgumentNullException.ThrowIfNull(reader);
 
-            JsonArray       rtn = new JsonArray();
+            var rtn = new JsonArray();
 
             if (reader.ReadChar() !=(int)'[')
                 throw new JsonReaderException("Expect '['", reader);
 
-            int c= reader.SkipWhiteSpace();
+            var c= reader.SkipWhiteSpace();
 
             while (c != (int)']') {
                 {

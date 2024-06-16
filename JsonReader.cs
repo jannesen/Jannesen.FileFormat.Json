@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -52,7 +51,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  object?                 ParseNode()
         {
-            int             c = SkipWhiteSpace();
+            var c = SkipWhiteSpace();
 
             switch(c) {
             case  (int)'[':     return JsonArray.Parse(this);
@@ -61,13 +60,13 @@ namespace Jannesen.FileFormat.Json
 
             default:
                 {
-                    string s = ReadChars();
+                    var s = ReadChars();
 
                     if (s == "null")    return null;
                     if (s == "true")    return true;
                     if (s == "false")   return false;
 
-                    int     p = 0;
+                    var p = 0;
 
                     if (s[0] == '+' || s[0] == '-')
                         ++p;
@@ -150,9 +149,9 @@ namespace Jannesen.FileFormat.Json
         }
         public                  string                  ReadString()
         {
-            int                 c;
-            int                 e   = ReadChar();
-            StringBuilder       rtn = new StringBuilder();
+            var e   = ReadChar();
+            var rtn = new StringBuilder();
+            int c;
 
             while ((c = ReadChar()) != e) {
                 if (c == (int)'\\') {
@@ -175,8 +174,8 @@ namespace Jannesen.FileFormat.Json
         }
         public                  string                  ReadChars()
         {
-            int                 c;
-            StringBuilder       rtn = new StringBuilder();
+            var rtn = new StringBuilder();
+            int c;
 
             while (_validChars(c = ReadChar()))
                 rtn.Append((char)c);
@@ -190,7 +189,7 @@ namespace Jannesen.FileFormat.Json
         }
         public                  int                     ReadCharHex()
         {
-            int c = ReadChar();
+            var c = ReadChar();
 
             if ((int)'0' <= c && c <= (int)'9')     return c - (int)'0';
             if ((int)'A' <= c && c <= (int)'F')     return c - (int)'A' + 10;
