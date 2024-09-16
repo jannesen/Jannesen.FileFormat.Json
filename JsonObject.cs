@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace Jannesen.FileFormat.Json
 {
     [Serializable]
-    public class JsonObject: Dictionary<string, object>
+    public class JsonObject: Dictionary<string, object>, IJsonSerialize
     {
         public      static      JsonObject              Parse(JsonReader reader)
         {
@@ -63,7 +63,7 @@ namespace Jannesen.FileFormat.Json
         public                  object                  GetValue(string name)
         {
             if (!TryGetValue(name, out var rtn))
-                throw new IndexOutOfRangeException("Unknown field '" + name + "' in JSON object.");
+                throw new IndexOutOfRangeException("Missing field '" + name + "' in JSON object.");
 
             if (rtn == null) { 
                 throw new FormatException("Field '" + name + "' = null.");
@@ -310,6 +310,11 @@ namespace Jannesen.FileFormat.Json
         public                  JsonArray               GetValueArrayRequired(string name)
         {
             return GetValueArray(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
+        }
+
+        public                  void                    WriteTo(JsonWriter writer)
+        {
+            writer.WriteObject(this);
         }
 
         public  override        bool                    Equals(object obj)

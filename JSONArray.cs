@@ -15,6 +15,11 @@ namespace Jannesen.FileFormat.Json
         {
         }
 
+        public                  void                    WriteTo(JsonWriter writer)
+        {
+            writer.WriteArray(this);
+        }
+
         public  override        bool                    Equals(object obj)
         {
             if (obj is JsonArray other) {

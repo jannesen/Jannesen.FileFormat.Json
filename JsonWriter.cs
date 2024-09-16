@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Jannesen.FileFormat.Json
 {
-    public interface IJsonWriter
+    public interface IJsonSerialize
     {
         void            WriteTo(JsonWriter writer);
     }
@@ -47,7 +47,7 @@ namespace Jannesen.FileFormat.Json
                 _textWriter.Dispose();
         }
 
-        public static          string                   Stringify(object value, bool ascii=false)
+        public static           string                  Stringify(object value, bool ascii=false)
         {
             using (var stringWriter = new StringWriter()) {
                 using (var jsonWriter = new JsonWriter(stringWriter, true, ascii)) {
@@ -55,6 +55,15 @@ namespace Jannesen.FileFormat.Json
                 }
 
                 return stringWriter.ToString();
+            }
+        }
+        public static           string                  Serialize(IJsonSerializer obj, bool ascii=false)
+        {
+            using (var text = new StringWriter()) {
+                using (var jsonWriter = new JsonWriter(text, true, ascii)) {
+                    jsonWriter.WriteSerialze(obj);
+                }
+                return text.ToString();
             }
         }
 
@@ -153,21 +162,21 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteDateTime(value);
         }
-        public                  void                    WriteNameValue(string name, IJsonWriter value)
+        public                  void                    WriteNameValue(string name, IJsonSerialize value)
         {
             WriteName(name);
 
             if (value != null)
-                ((IJsonWriter)value).WriteTo(this);
+                ((IJsonSerialize)value).WriteTo(this);
             else
                 WriteNull();
         }
-        public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonWriter
+        public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonSerialize
         {
             WriteName(name);
             WriteArray(value);
         }
-        public                  void                    WriteNameValue<T>(string name, IReadOnlyCollection<T> value) where T: IJsonWriter
+        public                  void                    WriteNameValue<T>(string name, IReadOnlyCollection<T> value) where T: IJsonSerialize
         {
             WriteName(name);
             WriteArray(value);
@@ -191,7 +200,7 @@ namespace Jannesen.FileFormat.Json
             if (value is double                     ) { WriteDouble  ((double                    )value); return; }
             if (value is bool                       ) { WriteBool    ((bool                      )value); return; }
             if (value is DateTime                   ) { WriteDateTime((DateTime                  )value); return; }
-            if (value is IJsonWriter                ) { ((IJsonWriter)value).WriteTo(this); return;              }
+            if (value is IJsonSerialize             ) { ((IJsonSerialize)value).WriteTo(this);            return; }
             if (value is Dictionary<string, object> ) { WriteObject  ((Dictionary<string, object>)value); return; }
             if (value is object[]                   ) { WriteArray   ((object[]                  )value); return; }
             if (value is List<object>               ) { WriteArray   ((List<object>              )value); return; }
@@ -254,7 +263,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray<T>(T[] array) where T:IJsonWriter
+        public                  void                    WriteArray<T>(T[] array) where T:IJsonSerialize
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
 
@@ -267,7 +276,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonWriter
+        public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonSerialize
         {
             if (array is null) throw new ArgumentNullException(nameof(array));
 
@@ -306,6 +315,15 @@ namespace Jannesen.FileFormat.Json
             _writeSeparator();
             _textWriter.Write(rawvalue);
             _domStatus.Push(DomStatus.ValueWriten);
+        }
+        public                  void                    WriteSerialze(IJsonSerializer obj)
+        {
+            if (obj == null) {
+                WriteNull();
+            }
+            else {
+                obj.Serializer(this);
+            }
         }
 
         private                 void                    _writeString(string value)
