@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 
 namespace Jannesen.FileFormat.Json
 {
-    [Serializable]
     public class JsonObject: Dictionary<string, object>, IJsonSerializer
     {
         public      static      JsonObject              Parse(JsonReader reader)
@@ -54,9 +53,6 @@ namespace Jannesen.FileFormat.Json
         {
         }
         public                                          JsonObject(int capacity): base(capacity)
-        {
-        }
-        protected                                       JsonObject(SerializationInfo info, StreamingContext context): base(info, context)
         {
         }
 

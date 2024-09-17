@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Jannesen.FileFormat.Json
 {
-    [Serializable]
-    public class JsonArray: List<object>
+    public class JsonArray: List<object>, IJsonSerializer
     {
         public                                          JsonArray()
         {
