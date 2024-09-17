@@ -61,7 +61,7 @@ namespace Jannesen.FileFormat.Json
         {
             using (var text = new StringWriter()) {
                 using (var jsonWriter = new JsonWriter(text, true, ascii)) {
-                    jsonWriter.WriteSerialze(obj);
+                    jsonWriter.WriteSerialize(obj);
                 }
                 return text.ToString();
             }
@@ -165,7 +165,7 @@ namespace Jannesen.FileFormat.Json
         public                  void                    WriteNameValue(string name, IJsonSerializer value)
         {
             WriteName(name);
-            WriteSerialze(value);
+            WriteSerialize(value);
         }
         public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonSerializer
         {
@@ -312,7 +312,7 @@ namespace Jannesen.FileFormat.Json
             _textWriter.Write(rawvalue);
             _domStatus.Push(DomStatus.ValueWriten);
         }
-        public                  void                    WriteSerialze(IJsonSerializer value)
+        public                  void                    WriteSerialize(IJsonSerializer value)
         {
             if (value == null) {
                 WriteNull();
