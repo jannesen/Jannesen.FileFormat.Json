@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Jannesen.FileFormat.Json
 {
-    public interface IJsonWriter
+    public interface IJsonSerializer
     {
         void            WriteTo(JsonWriter writer);
     }
@@ -54,6 +54,15 @@ namespace Jannesen.FileFormat.Json
                     jsonWriter.WriteValue(value);
                 }
 
+                return stringWriter.ToString();
+            }
+        }
+        public static           string                  Serialize(IJsonSerializer obj, bool ascii=false)
+        {
+            using (var stringWriter = new StringWriter()) {
+                using (var jsonWriter = new JsonWriter(stringWriter, true, ascii)) {
+                    jsonWriter.WriteSerialize(obj);
+                }
                 return stringWriter.ToString();
             }
         }
@@ -156,11 +165,7 @@ namespace Jannesen.FileFormat.Json
         public                  void                    WriteNameValue(string name, IJsonWriter value)
         {
             WriteName(name);
-
-            if (value != null)
-                ((IJsonWriter)value).WriteTo(this);
-            else
-                WriteNull();
+            WriteSerialize(value);
         }
         public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonWriter
         {
@@ -191,7 +196,7 @@ namespace Jannesen.FileFormat.Json
             if (value is double                     double_value)       { WriteDouble  (double_value);          return; }
             if (value is bool                       bool_value)         { WriteBool    (bool_value);            return; }
             if (value is DateTime                   datetime_value)     { WriteDateTime(datetime_value);        return; }
-            if (value is IJsonWriter                jsonwrite_value)    { jsonwrite_value.WriteTo(this);        return; }
+            if (value is IJsonSerializer            jsonwrite_value)    { jsonwrite_value.WriteTo(this);        return; }
             if (value is Dictionary<string, object> dictionay_value)    { WriteObject  (dictionay_value);       return; }
             if (value is object[]                   objectarray_value)  { WriteArray   (objectarray_value);     return; }
             if (value is List<object>               listobject_value)   { WriteArray   (listobject_value);      return; }
@@ -306,6 +311,15 @@ namespace Jannesen.FileFormat.Json
             _writeSeparator();
             _textWriter.Write(rawvalue);
             _domStatus.Push(DomStatus.ValueWriten);
+        }
+        public                  void                    WriteSerialize(IJsonSerializer? value)
+        {
+            if (value == null) {
+                WriteNull();
+            }
+            else {
+                value.WriteTo(this);
+            }
         }
 
         private                 void                    _writeString(string value)

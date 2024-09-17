@@ -3,13 +3,18 @@ using System.Collections.Generic;
 
 namespace Jannesen.FileFormat.Json
 {
-    public class JsonArray: List<object?>
+    public class JsonArray: List<object?>, IJsonSerializer
     {
         public                                          JsonArray()
         {
         }
         public                                          JsonArray(int capacity): base(capacity)
         {
+        }
+
+        public                  void                    WriteTo(JsonWriter writer)
+        {
+            writer.WriteArray(this);
         }
 
         public  override        bool                    Equals(object? obj)

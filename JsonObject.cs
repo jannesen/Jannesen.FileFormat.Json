@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Jannesen.FileFormat.Json
 {
-    public class JsonObject: Dictionary<string, object?>
+    public class JsonObject: Dictionary<string, object?>, IJsonSerializer
     {
         public      static      JsonObject              Parse(JsonReader reader)
         {
@@ -54,11 +54,6 @@ namespace Jannesen.FileFormat.Json
         public                                          JsonObject(int capacity): base(capacity)
         {
         }
-#if NET48
-        protected                                       JsonObject(SerializationInfo info, StreamingContext context): base(info, context)
-        {
-        }
-#endif
 
         public                  object                  GetValue(string name)
         {
