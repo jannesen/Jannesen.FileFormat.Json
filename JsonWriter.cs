@@ -162,17 +162,17 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteDateTime(value);
         }
-        public                  void                    WriteNameValue(string name, IJsonWriter value)
+        public                  void                    WriteNameValue(string name, IJsonSerializer value)
         {
             WriteName(name);
             WriteSerialize(value);
         }
-        public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonWriter
+        public                  void                    WriteNameValue<T>(string name, T[] value) where T: IJsonSerializer
         {
             WriteName(name);
             WriteArray(value);
         }
-        public                  void                    WriteNameValue<T>(string name, IReadOnlyCollection<T> value) where T: IJsonWriter
+        public                  void                    WriteNameValue<T>(string name, IReadOnlyCollection<T> value) where T: IJsonSerializer
         {
             WriteName(name);
             WriteArray(value);
@@ -184,22 +184,22 @@ namespace Jannesen.FileFormat.Json
         }
         public                  void                    WriteValue(object? value)
         {
-            if (value == null                       )                   { WriteNull    ();                      return; }
-            if (value is string                     string_value)       { WriteString  (string_value);          return; }
-            if (value is int                        int_value)          { WriteInt     (int_value);             return; }
-            if (value is byte                       byte_value)         { WriteInt     (byte_value);            return; }
-            if (value is Int16                      int16_value)        { WriteInt     (int16_value);           return; }
-            if (value is Int32                      int32_value)        { WriteInt     (int32_value);           return; }
-            if (value is Int64                      int64_value)        { WriteInt     (int64_value);           return; }
-            if (value is decimal                    decimal_value)      { WriteDecimal (decimal_value);         return; }
-            if (value is float                      float_value)        { WriteDouble  (float_value);           return; }
-            if (value is double                     double_value)       { WriteDouble  (double_value);          return; }
-            if (value is bool                       bool_value)         { WriteBool    (bool_value);            return; }
-            if (value is DateTime                   datetime_value)     { WriteDateTime(datetime_value);        return; }
-            if (value is IJsonSerializer            jsonwrite_value)    { jsonwrite_value.WriteTo(this);        return; }
-            if (value is Dictionary<string, object> dictionay_value)    { WriteObject  (dictionay_value);       return; }
-            if (value is object[]                   objectarray_value)  { WriteArray   (objectarray_value);     return; }
-            if (value is List<object>               listobject_value)   { WriteArray   (listobject_value);      return; }
+            if (value == null                        )                   { WriteNull    ();                      return; }
+            if (value is string                      string_value)       { WriteString  (string_value);          return; }
+            if (value is int                         int_value)          { WriteInt     (int_value);             return; }
+            if (value is byte                        byte_value)         { WriteInt     (byte_value);            return; }
+            if (value is Int16                       int16_value)        { WriteInt     (int16_value);           return; }
+            if (value is Int32                       int32_value)        { WriteInt     (int32_value);           return; }
+            if (value is Int64                       int64_value)        { WriteInt     (int64_value);           return; }
+            if (value is decimal                     decimal_value)      { WriteDecimal (decimal_value);         return; }
+            if (value is float                       float_value)        { WriteDouble  (float_value);           return; }
+            if (value is double                      double_value)       { WriteDouble  (double_value);          return; }
+            if (value is bool                        bool_value)         { WriteBool    (bool_value);            return; }
+            if (value is DateTime                    datetime_value)     { WriteDateTime(datetime_value);        return; }
+            if (value is IJsonSerializer             jsonwrite_value)    { jsonwrite_value.WriteTo(this);        return; }
+            if (value is Dictionary<string, object?> dictionay_value)    { WriteObject  (dictionay_value);       return; }
+            if (value is object[]                    objectarray_value)  { WriteArray   (objectarray_value);     return; }
+            if (value is List<object>                listobject_value)   { WriteArray   (listobject_value);      return; }
 
             throw new ArgumentException("Invalid argument type " + value.GetType().FullName + ".");
         }
@@ -237,7 +237,7 @@ namespace Jannesen.FileFormat.Json
         {
             WriteString(value.ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture));
         }
-        public                  void                    WriteObject(Dictionary<string, object> value)
+        public                  void                    WriteObject(Dictionary<string, object?> value)
         {
             ArgumentNullException.ThrowIfNull(value);
 
@@ -259,7 +259,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray<T>(T[] array) where T:IJsonWriter
+        public                  void                    WriteArray<T>(T[] array) where T:IJsonSerializer
         {
             ArgumentNullException.ThrowIfNull(array);
 
@@ -272,7 +272,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonWriter
+        public                  void                    WriteArray<T>(IReadOnlyCollection<T> array) where T:IJsonSerializer
         {
             ArgumentNullException.ThrowIfNull(array);
 
@@ -285,7 +285,7 @@ namespace Jannesen.FileFormat.Json
 
             WriteEndArray();
         }
-        public                  void                    WriteArray(IReadOnlyCollection<object> array)
+        public                  void                    WriteArray(IReadOnlyCollection<object?> array)
         {
             ArgumentNullException.ThrowIfNull(array);
 

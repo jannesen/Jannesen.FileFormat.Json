@@ -307,6 +307,11 @@ namespace Jannesen.FileFormat.Json
             return GetValueArray(name) ?? throw new FormatException("Missing JSON object field '" + name + "'.");
         }
 
+        public                  void                    WriteTo(JsonWriter writer)
+        {
+            writer.WriteObject(this);
+        }
+
         public  override        bool                    Equals(object? obj)
         {
             if (obj is JsonObject other) {
