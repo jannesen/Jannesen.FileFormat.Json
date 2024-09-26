@@ -309,6 +309,7 @@ namespace Jannesen.FileFormat.Json
 
         public                  void                    WriteTo(JsonWriter writer)
         {
+            ArgumentNullException.ThrowIfNull(writer);
             writer.WriteObject(this);
         }
 
