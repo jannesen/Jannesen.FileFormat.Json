@@ -15,7 +15,7 @@ Basic Json reader/writer.
 | array      | JsonArray  (List&lt;object&gt;)                |
 
 
-## classes 
+## classes
 
 | name          | description |
 |:--------------|:-----------------------------------------------|
