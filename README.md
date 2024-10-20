@@ -1,4 +1,4 @@
-﻿# Jannesen.FileFormat.Json
+# Jannesen.FileFormat.Json
 
 Basic Json reader/writer.
 

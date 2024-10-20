@@ -46,6 +46,7 @@
         <OutputPath>bin\Release</OutputPath>
         <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
+
     <ItemGroup>
       <None Remove=".git" />
     </ItemGroup>
