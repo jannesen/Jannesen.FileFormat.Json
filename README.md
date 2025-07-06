@@ -1,4 +1,4 @@
-﻿# Jannesen.FileFormat.Json
+# Jannesen.FileFormat.Json
 
 Basic Json reader/writer.
 
@@ -15,7 +15,7 @@ Basic Json reader/writer.
 | array      | JsonArray  (List&lt;object&gt;)                |
 
 
-## classes 
+## classes
 
 | name          | description |
 |:--------------|:-----------------------------------------------|

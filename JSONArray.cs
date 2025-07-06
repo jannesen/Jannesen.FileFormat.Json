@@ -29,7 +29,7 @@ namespace Jannesen.FileFormat.Json
                 for (int i = 0 ; i < this.Count ; ++i) {
                     if (this[i] != null ? !this[i].Equals(other[i]) : other[i] == null) {
                         return false;
-                    }                    
+                    }
                 }
 
                 return true;
@@ -44,7 +44,7 @@ namespace Jannesen.FileFormat.Json
             foreach(var e in this) {
                 if (e != null ) {
                     rtn ^= e.GetHashCode();
-                }                    
+                }
             }
 
             return rtn;
