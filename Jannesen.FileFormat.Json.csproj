@@ -15,7 +15,6 @@
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>Jannesen.FileFormat.Json.snk</AssemblyOriginatorKeyFile>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
 
         <Company>Jannesen B.V.</Company>
         <Version>1.11.00.000</Version>
