@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <RootNamespace>Jannesen.FileFormat.Json</RootNamespace>
-        <AssemblyName>Jannesen.FileFormat.Json</AssemblyName>
 
+    <PropertyGroup>
         <OutputType>Library</OutputType>
         <TargetFramework>net9</TargetFramework>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>		
         <Platforms>AnyCPU</Platforms>
 
         <Nullable>enable</Nullable>
 
         <IsTrimmable>True</IsTrimmable>
         <IsAotCompatible>True</IsAotCompatible>
+        
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>Jannesen.FileFormat.Json.snk</AssemblyOriginatorKeyFile>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
         <Company>Jannesen B.V.</Company>
         <Version>1.11.00.000</Version>
@@ -45,9 +44,5 @@
         <OutputPath>bin\Release\</OutputPath>
         <DefineConstants>TRACE</DefineConstants>
     </PropertyGroup>
-
-    <ItemGroup>
-      <None Remove=".git" />
-    </ItemGroup>
 
 </Project>
