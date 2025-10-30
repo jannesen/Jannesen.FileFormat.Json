@@ -162,7 +162,7 @@ namespace Jannesen.FileFormat.Json
             WriteName(name);
             WriteDateTime(value);
         }
-        public                  void                    WriteNameValue(string name, IJsonSerializer value)
+        public                  void                    WriteNameValue(string name, IJsonSerializer? value)
         {
             WriteName(name);
             WriteSerialize(value);
