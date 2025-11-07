@@ -25,9 +25,6 @@ namespace Jannesen.FileFormat.Json
         private readonly        bool                    _ascii;
         private readonly        Stack<DomStatus>        _domStatus;
 
-        public                                          JsonWriter(TextWriter textWriter): this(textWriter, true)
-        {
-        }
         public                                          JsonWriter(TextWriter textWriter, bool keepopen): this(textWriter, keepopen, false)
         {
         }

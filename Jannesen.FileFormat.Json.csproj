@@ -4,14 +4,14 @@
         <OutputType>Library</OutputType>
         <TargetFramework>net9</TargetFramework>
         <InvariantGlobalization>true</InvariantGlobalization>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>		
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <Platforms>AnyCPU</Platforms>
 
         <Nullable>enable</Nullable>
 
         <IsTrimmable>True</IsTrimmable>
         <IsAotCompatible>True</IsAotCompatible>
-        
+
         <SignAssembly>True</SignAssembly>
         <AssemblyOriginatorKeyFile>Jannesen.FileFormat.Json.snk</AssemblyOriginatorKeyFile>
 
