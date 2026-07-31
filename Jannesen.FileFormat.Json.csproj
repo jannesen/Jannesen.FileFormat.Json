@@ -11,8 +11,6 @@
         <IsTrimmable>True</IsTrimmable>
         <IsAotCompatible>True</IsAotCompatible>
         <IsPublishable>false</IsPublishable>
-        <SignAssembly>True</SignAssembly>
-        <AssemblyOriginatorKeyFile>Jannesen.FileFormat.Json.snk</AssemblyOriginatorKeyFile>
 
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
