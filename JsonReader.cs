@@ -9,6 +9,8 @@ namespace Jannesen.FileFormat.Json
     {
         private readonly        TextReader              _textReader;
         private readonly        bool                    _keepopen;
+        private readonly        bool                    _relaxed;
+
         private                 int                     _lineNumber;
         private                 int                     _linePosition;
         private                 int                     _undoChar;
@@ -16,10 +18,11 @@ namespace Jannesen.FileFormat.Json
         public                  int                     LineNumber      => _lineNumber;
         public                  int                     LinePosition    => _linePosition;
 
-        public                                          JsonReader(TextReader textReader, bool keepopen=false)
+        public                                          JsonReader(TextReader textReader, bool keepopen=false, bool relaxed=false)
         {
             _textReader   = textReader;
             _keepopen     = keepopen;
+            _relaxed      = relaxed;
             _lineNumber   = 1;
             _linePosition = 0;
             _undoChar     = -1;
@@ -31,15 +34,15 @@ namespace Jannesen.FileFormat.Json
             }
         }
 
-        public      static      object?                 ParseString(string s)
+        public      static      object?                 ParseString(string s, bool relaxed=false)
         {
-            using (var reader = new JsonReader(new StringReader(s))) {
+            using (var reader = new JsonReader(new StringReader(s), relaxed:relaxed)) {
                 return reader.ParseDocument();
             }
         }
-        public      static      object?                 ParseFile(string fileName)
+        public      static      object?                 ParseFile(string fileName, bool relaxed=false)
         {
-            using(var reader = new JsonReader(new StreamReader(fileName))) {
+            using(var reader = new JsonReader(new StreamReader(fileName), relaxed:relaxed)) {
                 return reader.ParseDocument();
             }
         }
@@ -54,9 +57,14 @@ namespace Jannesen.FileFormat.Json
             var c = SkipWhiteSpace();
 
             switch(c) {
-            case  (int)'[':     return JsonArray.Parse(this);
+            case (int)'[':      return JsonArray.Parse(this);
             case (int)'{':      return JsonObject.Parse(this);
             case (int)'"':      return ReadString();
+            case (int)'\'':
+                if (_relaxed) {
+                    return ReadString();
+                }
+                goto invalid_char;
 
             default:
                 {
@@ -75,8 +83,11 @@ namespace Jannesen.FileFormat.Json
                         ++p;
 
                     if (p == s.Length) {
-                        if (Int64.TryParse(s, out var rtn))
+                        if (Int64.TryParse(s, out var rtn)) {
                             return rtn;
+                        }
+
+                        goto invalid_char;
                     }
                     else {
                         if (s[p] == '.' || s[p] == 'e' || s[p] == 'E') {
@@ -102,13 +113,17 @@ namespace Jannesen.FileFormat.Json
                             if (double.TryParse(s,
                                                 NumberStyles.AllowDecimalPoint | System.Globalization.NumberStyles.AllowExponent | System.Globalization.NumberStyles.AllowLeadingSign,
                                                 CultureInfo.InvariantCulture,
-                                                out var rtn))
+                                                out var rtn)) {
                                 return rtn;
+                            }
+
+                            goto invalid_char;
                         }
                     }
-
-                    throw new JsonReaderException("Invalid value", this);
                 }
+
+invalid_char:
+                throw new JsonReaderException("Invalid value", this);
             }
         }
 
